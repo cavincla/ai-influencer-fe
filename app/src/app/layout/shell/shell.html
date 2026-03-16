@@ -1,0 +1,32 @@
+<div class="app-layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">TrendForge</span>
+    </div>
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/content" routerLinkActive="active">
+          <span class="nav-icon">🎬</span>
+          <span>Contenuti</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/calendar" routerLinkActive="active">
+          <span class="nav-icon">📅</span>
+          <span>Calendario</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>

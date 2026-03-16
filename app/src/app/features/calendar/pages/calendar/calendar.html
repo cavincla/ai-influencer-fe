@@ -1,0 +1,114 @@
+<div class="calendar-page">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Calendario editoriale</h1>
+      <p class="page-subtitle">{{ weekLabel }}</p>
+    </div>
+    <div class="nav-controls">
+      <button class="nav-btn" (click)="prevWeek()">‹</button>
+      <button class="nav-btn today-btn" (click)="goToday()">Oggi</button>
+      <button class="nav-btn" (click)="nextWeek()">›</button>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="loading">Caricamento calendario...</div>
+  }
+
+  @if (error) {
+    <div class="error-msg">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+
+    <!-- Week grid -->
+    <div class="week-grid">
+      @for (day of days; track day.date) {
+        <div
+          class="day-col"
+          [class.today]="isToday(day.date)"
+          [class.selected]="selectedDay?.date === day.date"
+          (click)="selectDay(day)">
+
+          <div class="day-header">
+            <span class="day-name">{{ dayName(day.date) }}</span>
+            <span class="day-number">{{ dayNumber(day.date) }}</span>
+          </div>
+
+          <div class="day-items">
+            @for (item of day.items; track item.id) {
+              <div class="item-chip" [class]="statusClass(item.status)">
+                <span class="item-dot"></span>
+                <span class="item-text">{{ (item.hook || item.script || 'Contenuto') | slice:0:30 }}...</span>
+              </div>
+            } @empty {
+              <div class="empty-day">—</div>
+            }
+          </div>
+
+          @if (day.items.length > 0) {
+            <div class="day-count">{{ day.items.length }} contenut{{ day.items.length === 1 ? 'o' : 'i' }}</div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Day detail panel -->
+    @if (selectedDay) {
+      <div class="day-detail">
+        <h3 class="detail-title">
+          {{ dayName(selectedDay.date) }} {{ dayNumber(selectedDay.date) }}
+        </h3>
+
+        @for (item of selectedDay.items; track item.id) {
+          <div class="detail-card">
+            <div class="detail-header">
+              <span class="detail-platforms">
+                @for (p of (item.target_platforms || []); track p) {
+                  <span>{{ p }}</span>
+                }
+              </span>
+              <span class="detail-status status-{{ item.status }}">{{ item.status }}</span>
+            </div>
+            <p class="detail-hook">{{ item.hook || item.script | slice:0:100 }}</p>
+            <div class="detail-actions">
+              <button class="btn-unschedule" (click)="removeSchedule(item, $event)">
+                ✕ Rimuovi
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <p class="empty-detail">Nessun contenuto pianificato per questo giorno.</p>
+        }
+      </div>
+    }
+
+  }
+
+  <!-- Schedule modal -->
+  @if (schedulingContent) {
+    <div class="modal-overlay" (click)="cancelSchedule()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Pianifica contenuto</h3>
+        <p class="modal-sub">{{ schedulingContent.hook || schedulingContent.script | slice:0:80 }}...</p>
+        <div class="modal-fields">
+          <label>
+            Data
+            <input type="date" [(ngModel)]="scheduleDate" />
+          </label>
+          <label>
+            Ora
+            <input type="time" [(ngModel)]="scheduleTime" />
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelSchedule()">Annulla</button>
+          <button class="btn-confirm" (click)="confirmSchedule()">Conferma</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

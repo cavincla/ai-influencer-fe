@@ -1,0 +1,33 @@
+<section class="content-list">
+  <div class="list-header">
+    <h2 class="section-title">🎬 Contenuti Generati</h2>
+    <div class="filters">
+      @for (f of filters; track f.value) {
+        <button
+          class="filter-btn"
+          [class.active]="activeFilter === f.value"
+          (click)="setFilter(f.value)">
+          {{ f.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading">Caricamento contenuti...</div>
+  }
+
+  @if (error) {
+    <div class="error-msg">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    <div class="cards-grid">
+      @for (item of items; track item.id) {
+        <app-content-card [content]="item" (contentChange)="onContentChange($event)" />
+      } @empty {
+        <div class="empty-msg">Nessun contenuto trovato.</div>
+      }
+    </div>
+  }
+</section>

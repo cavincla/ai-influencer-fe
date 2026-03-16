@@ -1,0 +1,102 @@
+<div class="content-card status-{{ content.status }}">
+
+  <!-- Header -->
+  <div class="card-header">
+    <div class="platforms">
+      @for (p of platforms; track p) {
+        <span class="platform-badge">{{ platformIcon[p] || '📱' }} {{ p }}</span>
+      }
+    </div>
+    <span class="status-badge status-{{ content.status }}">
+      {{ statusLabel[content.status] }}
+    </span>
+  </div>
+
+  <!-- Hook -->
+  @if (content.hook) {
+    <div class="card-hook">"{{ content.hook }}"</div>
+  }
+
+  <!-- Script -->
+  @if (content.script) {
+    <div class="card-script">
+      {{ content.script | slice:0:220 }}{{ content.script.length > 220 ? '...' : '' }}
+    </div>
+  }
+
+  <!-- CTA -->
+  @if (content.cta) {
+    <div class="card-cta">→ {{ content.cta }}</div>
+  }
+
+  <!-- Caption -->
+  @if (caption) {
+    <div class="card-caption">
+      <span class="label">Caption:</span> {{ caption | slice:0:120 }}...
+    </div>
+  }
+
+  <!-- Hashtags -->
+  @if (content.hashtags?.length) {
+    <div class="card-hashtags">
+      @for (tag of content.hashtags!.slice(0, 6); track tag) {
+        <span class="hashtag">{{ tag }}</span>
+      }
+    </div>
+  }
+
+  <!-- Audio preview -->
+  @if (audioSrc) {
+    <div class="media-preview">
+      <span class="media-label">🔊 Audio voiceover</span>
+      <audio controls [src]="audioSrc" preload="none" class="audio-player"></audio>
+    </div>
+  }
+
+  <!-- Video preview -->
+  @if (videoSrc) {
+    <div class="media-preview">
+      <span class="media-label">🎬 Video</span>
+      <video controls [src]="videoSrc" preload="metadata" class="video-player" playsinline></video>
+    </div>
+  }
+
+  <!-- Published URLs -->
+  @if (publishedUrls.length) {
+    <div class="published-links">
+      <span class="media-label">🔗 Pubblicato su</span>
+      <div class="links-row">
+        @for (entry of publishedUrls; track entry.platform) {
+          <a [href]="entry.url" target="_blank" rel="noopener" class="platform-link">
+            {{ platformIcon[entry.platform] || '📱' }} {{ entry.platform }}
+          </a>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Scheduled -->
+  @if (content.scheduled_for) {
+    <div class="scheduled-info">
+      📅 Pianificato: {{ content.scheduled_for | date:'dd/MM/yy HH:mm' }}
+    </div>
+  }
+
+  <!-- Footer: date + actions -->
+  <div class="card-footer">
+    <span class="created-at">{{ content.created_at | date:'dd/MM/yy HH:mm' }}</span>
+
+    <div class="actions">
+      @if (content.status === 'pending_review') {
+        <button class="btn-approve" (click)="approve()">✓ Approva</button>
+        <button class="btn-reject" (click)="reject()">✗ Scarta</button>
+      }
+      @if (content.status === 'approved') {
+        <button class="btn-publish" [disabled]="publishing" (click)="publish()">
+          {{ publishing ? '⏳ ...' : '🚀 Pubblica' }}
+        </button>
+      }
+    </div>
+  </div>
+
+</div>

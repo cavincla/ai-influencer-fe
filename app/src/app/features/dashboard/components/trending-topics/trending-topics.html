@@ -1,0 +1,30 @@
+<section class="trending-topics">
+  <h2 class="section-title">🔥 Trending Topics</h2>
+
+  @if (loading) {
+    <div class="loading">Caricamento trend...</div>
+  }
+
+  @if (error) {
+    <div class="error-msg">{{ error }}</div>
+  }
+
+  @if (!loading && !error) {
+    <ul class="topics-list">
+      @for (topic of topics; track topic.id) {
+        <li class="topic-item">
+          <div class="topic-rank">#{{ $index + 1 }}</div>
+          <div class="topic-info">
+            <span class="topic-name">{{ topic.topic }}</span>
+            <span class="topic-date">{{ topic.discovered_at | date:'dd/MM HH:mm' }}</span>
+          </div>
+          <div class="topic-score" [class]="scoreClass(topic.score)">
+            {{ topic.score | number:'1.0-0' }}
+          </div>
+        </li>
+      } @empty {
+        <li class="empty-msg">Nessun trend disponibile.</li>
+      }
+    </ul>
+  }
+</section>

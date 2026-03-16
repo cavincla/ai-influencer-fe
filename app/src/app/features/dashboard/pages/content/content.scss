@@ -1,0 +1,19 @@
+.content-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header {
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: #f3f4f6;
+  }
+  .page-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+  }
+}

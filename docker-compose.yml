@@ -8,11 +8,11 @@ services:
       - "./app:/app:cached"
       - "./.data/bob-s-home:/home/bob:cached"
     labels:
-      - "com.dnsdock.alias=CHANGEME.docker"
+      - "com.dnsdock.alias=ai-influencer-fe.docker"
     ports:
       - "4200:4200"
     environment:
-      - APP_NAME=CHANGEME
+      - APP_NAME=ai-influencer-fe
       - APP_PORT=4200
       - APP_ENVIRONMENT=local
       - TERM=xterm-256color

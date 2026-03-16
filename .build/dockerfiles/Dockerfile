@@ -47,7 +47,7 @@ RUN npm run build
 FROM bitnami/nginx:latest AS dist
 
 # Copy application dist files from build stage
-COPY --from=build /app/dist/CHANGEME/browser /app
+COPY --from=build /app/dist/ai-influencer-fe/browser /app
 
 # Copy nginx configuration
 COPY .build/configs/nginx_angular.conf /opt/bitnami/nginx/conf/server_blocks/

@@ -1,0 +1,47 @@
+<div class="dashboard-page">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Panoramica trend e contenuti generati</p>
+    </div>
+
+    <div class="pipeline-controls">
+      @if (config) {
+        <label class="toggle-label">
+          <span>Auto-publish</span>
+          <button
+            class="toggle-btn"
+            [class.active]="config.auto_publish"
+            (click)="toggleAutoPublish()">
+            {{ config.auto_publish ? 'ON' : 'OFF' }}
+          </button>
+        </label>
+      }
+
+      <button
+        class="btn-trigger"
+        [disabled]="triggerStatus === 'running'"
+        (click)="triggerPipeline()">
+        @switch (triggerStatus) {
+          @case ('idle')    { ▶ Avvia pipeline }
+          @case ('running') { ⏳ In esecuzione... }
+          @case ('done')    { ✓ Completata }
+          @case ('error')   { ✗ Errore — riprova }
+        }
+      </button>
+    </div>
+  </header>
+
+  <!-- Main grid -->
+  <div class="dashboard-grid">
+    <div class="col-trends">
+      <app-trending-topics />
+    </div>
+    <div class="col-content">
+      <app-content-list />
+    </div>
+  </div>
+
+</div>
