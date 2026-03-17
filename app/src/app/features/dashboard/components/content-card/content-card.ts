@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GeneratedContent, ContentStatus } from '../../../../core/models/content.model';
+import { GeneratedContent, ContentStatus, ValidationResult } from '../../../../core/models/content.model';
 import { ContentService } from '../../../../core/services/content.service';
 import { PublishService } from '../../../../core/services/publish.service';
 import { environment } from '../../../../../environments/environment';
@@ -20,11 +20,14 @@ export class ContentCardComponent {
   private publishService = inject(PublishService);
 
   publishing = false;
+  validating = false;
+  lang: 'it' | 'en' = 'it';
 
   platformIcon: Record<string, string> = {
     tiktok: '🎵',
     instagram: '📸',
     youtube: '▶️',
+    facebook: '📘',
   };
 
   statusLabel: Record<ContentStatus, string> = {
@@ -43,6 +46,10 @@ export class ContentCardComponent {
 
   get videoSrc(): string | null {
     return this.content.video_url ? `${environment.apiUrl}${this.content.video_url}` : null;
+  }
+
+  get thumbnailSrc(): string | null {
+    return this.content.thumbnail_url ? `${environment.apiUrl}${this.content.thumbnail_url}` : null;
   }
 
   get platforms(): string[] {
@@ -84,5 +91,26 @@ export class ContentCardComponent {
       },
       error: () => (this.publishing = false),
     });
+  }
+
+  validate(): void {
+    this.validating = true;
+    this.contentService.validate(this.content.id).subscribe({
+      next: (result: ValidationResult) => {
+        this.contentChange.emit({ ...this.content, validation_result: result });
+        this.validating = false;
+      },
+      error: () => (this.validating = false),
+    });
+  }
+
+  get activeHook(): string | null {
+    const v = this.content.content_versions?.[this.lang];
+    return v?.hook ?? this.content.hook;
+  }
+
+  get activeScript(): string | null {
+    const v = this.content.content_versions?.[this.lang];
+    return v?.script ?? this.content.script;
   }
 }

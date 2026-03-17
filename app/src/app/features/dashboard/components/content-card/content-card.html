@@ -7,20 +7,33 @@
         <span class="platform-badge">{{ platformIcon[p] || '📱' }} {{ p }}</span>
       }
     </div>
-    <span class="status-badge status-{{ content.status }}">
-      {{ statusLabel[content.status] }}
-    </span>
+    <div class="header-right">
+      @if (content.channel_id) {
+        <span class="channel-badge">📡 Ch.{{ content.channel_id }}</span>
+      }
+      <span class="status-badge status-{{ content.status }}">
+        {{ statusLabel[content.status] }}
+      </span>
+    </div>
   </div>
 
+  <!-- Multi-language toggle -->
+  @if (content.content_versions && content.content_versions['en']) {
+    <div class="lang-toggle">
+      <button [class.active]="lang === 'it'" (click)="lang = 'it'">🇮🇹 IT</button>
+      <button [class.active]="lang === 'en'" (click)="lang = 'en'">🇬🇧 EN</button>
+    </div>
+  }
+
   <!-- Hook -->
-  @if (content.hook) {
-    <div class="card-hook">"{{ content.hook }}"</div>
+  @if (activeHook) {
+    <div class="card-hook">"{{ activeHook }}"</div>
   }
 
   <!-- Script -->
-  @if (content.script) {
+  @if (activeScript) {
     <div class="card-script">
-      {{ content.script | slice:0:220 }}{{ content.script.length > 220 ? '...' : '' }}
+      {{ activeScript | slice:0:220 }}{{ activeScript!.length > 220 ? '...' : '' }}
     </div>
   }
 
@@ -42,6 +55,13 @@
       @for (tag of content.hashtags!.slice(0, 6); track tag) {
         <span class="hashtag">{{ tag }}</span>
       }
+    </div>
+  }
+
+  <!-- Thumbnail preview -->
+  @if (thumbnailSrc) {
+    <div class="media-preview">
+      <img [src]="thumbnailSrc" alt="Thumbnail" class="video-thumbnail" loading="lazy" />
     </div>
   }
 
@@ -82,11 +102,36 @@
     </div>
   }
 
+  <!-- Validation result -->
+  @if (content.validation_result) {
+    <div class="validation-result" [class.passed]="content.validation_result.passed" [class.failed]="!content.validation_result.passed">
+      <div class="validation-header">
+        <span>{{ content.validation_result.passed ? '✅ Contenuto validato' : '⚠️ Problemi rilevati' }}</span>
+        <span class="score">Score: {{ content.validation_result.score }}/10</span>
+      </div>
+      @if (content.validation_result.issues?.length) {
+        <ul class="validation-issues">
+          @for (issue of content.validation_result.issues; track issue) {
+            <li>{{ issue }}</li>
+          }
+        </ul>
+      }
+      @if (content.validation_result.suggestion) {
+        <div class="validation-suggestion">{{ content.validation_result.suggestion }}</div>
+      }
+    </div>
+  }
+
   <!-- Footer: date + actions -->
   <div class="card-footer">
     <span class="created-at">{{ content.created_at | date:'dd/MM/yy HH:mm' }}</span>
 
     <div class="actions">
+      @if (content.status === 'pending_review' || content.status === 'approved') {
+        <button class="btn-validate" [disabled]="validating" (click)="validate()">
+          {{ validating ? '⏳ ...' : '🔍 Valida' }}
+        </button>
+      }
       @if (content.status === 'pending_review') {
         <button class="btn-approve" (click)="approve()">✓ Approva</button>
         <button class="btn-reject" (click)="reject()">✗ Scarta</button>

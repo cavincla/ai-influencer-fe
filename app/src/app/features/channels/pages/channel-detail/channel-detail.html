@@ -1,0 +1,46 @@
+<div class="channel-detail">
+
+  @if (channel) {
+    <div class="detail-header">
+      <div class="back-link" routerLink="/channels">← Canali</div>
+      <div class="header-info">
+        <h1>{{ channel.persona.name }}</h1>
+        <span class="channel-name">{{ channel.name }}</span>
+        <span class="channel-type">{{ channel.channel_type.replace('_', ' ') }}</span>
+      </div>
+      <button class="btn-pipeline" (click)="runPipeline()">▶ Pipeline</button>
+    </div>
+
+    <!-- Generate single content -->
+    <div class="generate-section">
+      <h2>Genera contenuto</h2>
+      <div class="generate-row">
+        <input [(ngModel)]="newTopic" placeholder="Topic (es. 'anime estate 2025')" class="topic-input" />
+        <input [(ngModel)]="newContext" placeholder="Contesto aggiuntivo (opzionale)" class="context-input" />
+        <button class="btn-generate" [disabled]="!newTopic.trim() || generating" (click)="generateContent()">
+          {{ generating ? '⏳ ...' : '✨ Genera' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Content list -->
+  <div class="content-section">
+    <div class="section-header">
+      <h2>Contenuti ({{ total }})</h2>
+    </div>
+
+    @if (loading) {
+      <div class="loading">Caricamento...</div>
+    } @else if (contents.length === 0) {
+      <div class="empty">Nessun contenuto ancora. Genera il primo contenuto o avvia la pipeline.</div>
+    } @else {
+      <div class="content-grid">
+        @for (content of contents; track content.id) {
+          <app-content-card [content]="content" (contentChange)="onContentChange($event)" />
+        }
+      </div>
+    }
+  </div>
+
+</div>

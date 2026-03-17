@@ -1,0 +1,35 @@
+<div class="channel-card type-{{ colorClass }}" [class.inactive]="!channel.is_active">
+
+  <div class="card-header">
+    <div class="type-badge">{{ typeLabel[channel.channel_type] }}</div>
+    <div class="status-dot" [class.active]="channel.is_active" [title]="channel.is_active ? 'Attivo' : 'Disattivato'"></div>
+  </div>
+
+  <div class="persona-name">{{ channel.persona.name }}</div>
+  <div class="channel-name">{{ channel.name }}</div>
+
+  <div class="persona-desc">{{ channel.persona.description }}</div>
+
+  <div class="platforms">
+    @for (p of platforms; track p) {
+      <span class="platform-badge">{{ p }}</span>
+    }
+  </div>
+
+  @if (channel.content_config?.tone) {
+    <div class="tone-tag">🎙 {{ channel.content_config.tone }}</div>
+  }
+
+  <div class="card-actions">
+    <a [routerLink]="['/channels', channel.id]" class="btn-detail">📂 Contenuti</a>
+
+    <button class="btn-pipeline" [disabled]="runningPipeline || !channel.is_active" (click)="runPipeline()">
+      {{ runningPipeline ? '⏳ Pipeline...' : '▶ Avvia Pipeline' }}
+    </button>
+
+    <button class="btn-toggle" (click)="toggleActive()">
+      {{ channel.is_active ? '⏸ Disattiva' : '▶ Attiva' }}
+    </button>
+  </div>
+
+</div>

@@ -22,6 +22,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/calendar/pages/calendar/calendar').then((m) => m.CalendarPage),
       },
+      {
+        path: 'channels',
+        loadComponent: () =>
+          import('./features/channels/pages/channels/channels').then((m) => m.ChannelsPage),
+      },
+      {
+        path: 'channels/:id',
+        loadComponent: () =>
+          import('./features/channels/pages/channel-detail/channel-detail').then((m) => m.ChannelDetailPage),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

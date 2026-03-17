@@ -1,0 +1,28 @@
+<div class="toast-container" aria-live="polite" aria-atomic="false">
+  @for (toast of toasts(); track toast.id) {
+    <div
+      class="toast toast--{{ toast.type }}"
+      role="alert"
+      [attr.aria-label]="typeLabel(toast.type) + ': ' + toast.message">
+      <div class="toast__icon">
+        @switch (toast.type) {
+          @case ('error')   { <span>✕</span> }
+          @case ('success') { <span>✓</span> }
+          @case ('warning') { <span>⚠</span> }
+          @case ('info')    { <span>ℹ</span> }
+        }
+      </div>
+      <div class="toast__body">
+        <span class="toast__type">{{ typeLabel(toast.type) }}</span>
+        <p class="toast__message">{{ toast.message }}</p>
+      </div>
+      <button
+        class="toast__dismiss"
+        type="button"
+        aria-label="Chiudi notifica"
+        (click)="dismiss(toast.id)">
+        ×
+      </button>
+    </div>
+  }
+</div>

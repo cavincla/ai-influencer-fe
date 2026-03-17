@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ContentListResponse, ContentStatus, GeneratedContent } from '../models/content.model';
+import { ContentListResponse, ContentStatus, GeneratedContent, ValidationResult } from '../models/content.model';
 import { CalendarResponse } from '../models/calendar.model';
 import { environment } from '../../../environments/environment';
 
@@ -44,5 +44,9 @@ export class ContentService {
   getCalendar(fromDate: string, toDate: string): Observable<CalendarResponse> {
     const params = new HttpParams().set('from_date', fromDate).set('to_date', toDate);
     return this.http.get<CalendarResponse>(`${this.baseUrl}/calendar`, { params });
+  }
+
+  validate(id: number): Observable<ValidationResult> {
+    return this.http.get<ValidationResult>(`${this.baseUrl}/${id}/validate`);
   }
 }

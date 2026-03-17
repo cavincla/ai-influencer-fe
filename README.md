@@ -61,21 +61,33 @@ L'app è disponibile su [http://localhost:4200](http://localhost:4200).
 **Cosa verificare:**
 - [ ] Filtri per status in cima: Tutti / In revisione / Approvati / In pubblicazione / Pubblicati / Scartati
 - [ ] Ogni card mostra: piattaforme, status badge, hook, script (troncato), CTA, caption, hashtag
+- [ ] Toggle lingua **🇮🇹 IT / 🇬🇧 EN** visibile se il contenuto ha entrambe le versioni
 - [ ] Se l'audio è generato: player `<audio>` nella card
 - [ ] Se il video è generato: player `<video>` nella card
 
-**Flusso approvazione:**
-1. Trovare una card con status **In revisione** (giallo)
-2. Cliccare **✓ Approva** → status diventa **Approvato** (verde) senza ricaricare la pagina
-3. Cliccare **✗ Scarta** su un'altra → status diventa **Scartato** (rosso)
+**Flusso completo con validation (Phase 8):**
 
-**Flusso pubblicazione:**
+1. Trovare una card con status **In revisione** (giallo)
+2. Cliccare **🔍 Valida** → il sistema interroga il backend (GET `/api/content/{id}/validate`)
+3. Appare il pannello **Validation Result**:
+   - ✅ verde: `Contenuto validato — Score: X/10`
+   - ⚠️ giallo: lista dei problemi rilevati + suggerimento per correggere
+4. Se passa, cliccare **✓ Approva** → status diventa **Approvato** (verde)
+5. Cliccare **✗ Scarta** per rifiutare
+
+**Toggle multi-lingua IT/EN:**
+- Se il contenuto ha `content_versions` con entrambe le lingue, compare il toggle `🇮🇹 IT / 🇬🇧 EN`
+- Cliccando **EN** l'hook e lo script si aggiornano con la versione inglese
+- Le captions rimangono per piattaforma (YouTube → EN, TikTok/IG/FB → IT)
+
+**Flusso pubblicazione simultanea:**
 1. Su una card **Approvato**, cliccare **🚀 Pubblica**
 2. Status diventa **In pubblicazione** (viola)
-3. Dopo che il task Celery completa → status **Pubblicato** (blu)
-4. Compaiono i link per piattaforma (TikTok / Instagram / YouTube)
+3. Il backend pubblica in parallelo su tutti i canali configurati (TikTok + IG + YouTube + Facebook)
+4. Dopo che il task Celery completa → status **Pubblicato** (blu)
+5. Compaiono i link per ogni piattaforma
 
-> Senza `BUFFER_ACCESS_TOKEN` configurato, la pubblicazione usa link stub.
+> Senza publisher configurati, la pubblicazione usa link stub o Buffer come fallback.
 
 ---
 
@@ -170,3 +182,6 @@ export const environment = {
 | 3 | ✅ | Calendario settimanale, trigger pipeline, toggle auto-publish |
 | 4 | ✅ | Flusso pubblicazione via Buffer API, link per piattaforma nella card |
 | 5 | ✅ | Test automatici backend (30 test, 100% pass) |
+| 6 | ✅ | Analytics, thumbnail generazione, statistiche contenuto |
+| 7 | ✅ | Thumbnail preview AI, image_url nella card |
+| 8 | ✅ | Toggle IT/EN per multi-lingua, pannello safety validation, pulsante 🔍 Valida, Facebook badge |

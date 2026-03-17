@@ -18,6 +18,22 @@
   gap: 8px;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.channel-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #a78bfa;
+  background: #1e1b4b;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
 .platforms {
   display: flex;
   flex-wrap: wrap;
@@ -125,6 +141,14 @@
   object-fit: contain;
 }
 
+.video-thumbnail {
+  width: 100%;
+  max-height: 160px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #0f0f1a;
+}
+
 .published-links {
   display: flex;
   flex-direction: column;
@@ -173,6 +197,75 @@
   gap: 8px;
 }
 
+// Lang toggle
+.lang-toggle {
+  display: flex;
+  gap: 6px;
+
+  button {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border: 1px solid #2a2a45;
+    border-radius: 6px;
+    background: #252545;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &.active {
+      background: #1e1b4b;
+      color: #a78bfa;
+      border-color: #a78bfa;
+    }
+  }
+}
+
+// Validation result panel
+.validation-result {
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+
+  &.passed {
+    background: #0a2a14;
+    border: 1px solid #166534;
+    color: #4ade80;
+  }
+
+  &.failed {
+    background: #2d1a00;
+    border: 1px solid #92400e;
+    color: #fbbf24;
+  }
+
+  .validation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+  }
+
+  .score {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+
+  .validation-issues {
+    margin: 6px 0 0;
+    padding-left: 16px;
+    font-size: 11px;
+    color: #f87171;
+  }
+
+  .validation-suggestion {
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: 0.8;
+    font-style: italic;
+  }
+}
+
 .btn-approve, .btn-reject {
   font-size: 12px;
   font-weight: 600;
@@ -187,6 +280,21 @@
 
 .btn-approve { background: #14532d; color: #4ade80; }
 .btn-reject  { background: #2d0a0a; color: #f87171; }
+.btn-validate {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #1a2a3a;
+  color: #93c5fd;
+  transition: opacity 0.2s;
+
+  &:hover:not(:disabled) { opacity: 0.85; }
+  &:disabled { opacity: 0.5; cursor: default; }
+}
+
 .btn-publish {
   font-size: 12px;
   font-weight: 600;

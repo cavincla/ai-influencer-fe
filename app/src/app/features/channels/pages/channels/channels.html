@@ -1,0 +1,106 @@
+<div class="channels-page">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">📡 Canali AI</h1>
+      <p class="page-sub">Gestisci i tuoi canali di AI influencer indipendenti</p>
+    </div>
+    <button class="btn-new" (click)="showForm = !showForm">
+      {{ showForm ? '✕ Annulla' : '+ Nuovo Canale' }}
+    </button>
+  </div>
+
+  <!-- Create form -->
+  @if (showForm) {
+    <div class="create-form">
+      <h2>Nuovo Canale</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome canale</label>
+          <input [(ngModel)]="form.name" (input)="autoSlug()" placeholder="Es. Luna AI" />
+        </div>
+        <div class="form-group">
+          <label>Slug (URL)</label>
+          <input [(ngModel)]="form.slug" placeholder="luna-ai" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tipo canale</label>
+        <div class="type-select">
+          @for (t of channelTypes; track t.value) {
+            <button class="type-btn" [class.active]="form.channel_type === t.value"
+                    (click)="form.channel_type = t.value">
+              {{ t.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="form-section-title">Personaggio AI</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome personaggio</label>
+          <input [(ngModel)]="form.persona_name" placeholder="Es. Luna" />
+        </div>
+        <div class="form-group">
+          <label>Tono di voce</label>
+          <input [(ngModel)]="form.persona_voice_style" placeholder="Es. giovane, ironico, energico" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descrizione personaggio</label>
+        <textarea [(ngModel)]="form.persona_description" rows="2"
+                  placeholder="Es. Personaggio AI anime originale, creativà e irriverente. Dichiaratamente artificiale."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Stile visivo (prompt immagine base)</label>
+        <input [(ngModel)]="form.persona_visual_prompt"
+               placeholder="Es. anime girl with purple hair, expressive eyes, colorful outfit" />
+      </div>
+
+      <div class="form-group">
+        <label>Piattaforme target</label>
+        <div class="platforms-select">
+          @for (p of ['tiktok', 'instagram', 'youtube', 'facebook']; track p) {
+            <button class="platform-btn" [class.active]="form.platforms.includes(p)"
+                    (click)="togglePlatform(p)">
+              {{ p }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit" (click)="submitForm()">✓ Crea Canale</button>
+        <button class="btn-cancel" (click)="showForm = false">Annulla</button>
+      </div>
+    </div>
+  }
+
+  <!-- Channels grid -->
+  @if (loading) {
+    <div class="loading">Caricamento canali...</div>
+  } @else if (channels.length === 0) {
+    <div class="empty">
+      <p>Nessun canale configurato.</p>
+      <p>Clicca <strong>+ Nuovo Canale</strong> per crearne uno, oppure esegui il seed:</p>
+      <code>docker compose exec app python scripts/seed_channels.py</code>
+    </div>
+  } @else {
+    <div class="channels-grid">
+      @for (channel of channels; track channel.id) {
+        <app-channel-card
+          [channel]="channel"
+          (channelChange)="onChannelChange($event)"
+          (pipelineTriggered)="onPipelineTriggered($event)"
+        />
+      }
+    </div>
+  }
+
+</div>
