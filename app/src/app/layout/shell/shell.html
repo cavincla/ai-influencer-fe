@@ -29,6 +29,12 @@
           <span>Canali AI</span>
         </a>
       </li>
+      <li>
+        <a routerLink="/review" routerLinkActive="active">
+          <span class="nav-icon">✅</span>
+          <span>Revisione</span>
+        </a>
+      </li>
     </ul>
   </nav>
 
@@ -36,5 +42,29 @@
     <router-outlet />
   </main>
 </div>
+
+<!-- Bottom navigation bar (mobile only) -->
+<nav class="bottom-nav">
+  <a routerLink="/dashboard" routerLinkActive="active">
+    <span class="nav-icon">📊</span>
+    <span>Dashboard</span>
+  </a>
+  <a routerLink="/content" routerLinkActive="active">
+    <span class="nav-icon">🎬</span>
+    <span>Contenuti</span>
+  </a>
+  <a routerLink="/calendar" routerLinkActive="active">
+    <span class="nav-icon">📅</span>
+    <span>Calendario</span>
+  </a>
+  <a routerLink="/channels" routerLinkActive="active">
+    <span class="nav-icon">📡</span>
+    <span>Canali</span>
+  </a>
+  <a routerLink="/review" routerLinkActive="active">
+    <span class="nav-icon">✅</span>
+    <span>Revisione</span>
+  </a>
+</nav>
 
 <app-toast />

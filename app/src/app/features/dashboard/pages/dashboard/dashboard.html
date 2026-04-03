@@ -8,6 +8,8 @@
     </div>
 
     <div class="pipeline-controls">
+
+      <!-- Auto-publish toggle -->
       @if (config) {
         <label class="toggle-label">
           <span>Auto-publish</span>
@@ -20,17 +22,53 @@
         </label>
       }
 
+      <!-- Schedule info + editor -->
+      <div class="schedule-block">
+        @if (!editingSchedule) {
+          <span class="schedule-label">
+            🕐 Pipeline: <strong>{{ scheduleLabel }}</strong>
+          </span>
+          <button class="btn-link" (click)="openScheduleEditor()">modifica</button>
+        } @else {
+          <div class="schedule-editor">
+            <label>
+              Ora
+              <select [(ngModel)]="scheduleHour">
+                @for (h of hours; track h) {
+                  <option [value]="h">{{ h | number:'2.0' }}:00</option>
+                }
+              </select>
+            </label>
+            <label>
+              Minuto
+              <select [(ngModel)]="scheduleMinute">
+                @for (m of minuteOptions; track m) {
+                  <option [value]="m">:{{ m | number:'2.0' }}</option>
+                }
+              </select>
+            </label>
+            <span class="tz-note">fuso Europa/Roma</span>
+            <button class="btn btn-primary btn-sm" (click)="saveSchedule()" [disabled]="savingSchedule">
+              {{ savingSchedule ? '...' : 'Salva' }}
+            </button>
+            <button class="btn btn-ghost btn-sm" (click)="cancelScheduleEdit()">Annulla</button>
+          </div>
+        }
+      </div>
+
+      <!-- Trigger manuale -->
       <button
         class="btn-trigger"
         [disabled]="triggerStatus === 'running'"
         (click)="triggerPipeline()">
         @switch (triggerStatus) {
-          @case ('idle')    { ▶ Avvia pipeline }
+          @case ('idle')    { ▶ Avvia pipeline ora }
           @case ('running') { ⏳ In esecuzione... }
-          @case ('done')    { ✓ Completata }
+          @case ('done')    { ✓ Avviata }
           @case ('error')   { ✗ Errore — riprova }
         }
       </button>
+
     </div>
   </header>
 

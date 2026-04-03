@@ -56,6 +56,76 @@
   }
 }
 
+/* Schedule block */
+.schedule-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .schedule-label {
+    font-size: 13px;
+    color: #9ca3af;
+
+    strong { color: #a78bfa; }
+  }
+}
+
+.schedule-editor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #1a1a2e;
+  border: 1px solid #2a2a45;
+  border-radius: 8px;
+  padding: 8px 12px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #9ca3af;
+
+    select {
+      background: #0f0f1a;
+      border: 1px solid #2a2a45;
+      border-radius: 4px;
+      color: #f3f4f6;
+      font-size: 12px;
+      padding: 3px 6px;
+    }
+  }
+
+  .tz-note { font-size: 10px; color: #6b7280; }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #a78bfa;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  transition: opacity 0.15s;
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &.btn-sm { font-size: 11px; padding: 4px 8px; }
+  &.btn-primary { background: #89b4fa; color: #1e1e2e; }
+  &.btn-ghost { background: transparent; color: #9ca3af; border: 1px solid #2a2a45; }
+}
+
 .btn-trigger {
   font-size: 13px;
   font-weight: 600;
@@ -79,5 +149,22 @@
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
+  }
+}
+
+// ── Mobile ───────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .page-header {
+    gap: 12px;
+  }
+
+  .pipeline-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-trigger {
+    flex: 1;
+    text-align: center;
   }
 }

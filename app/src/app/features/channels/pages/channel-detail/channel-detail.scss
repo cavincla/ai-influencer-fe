@@ -123,3 +123,50 @@
   padding: 48px;
   font-size: 14px;
 }
+
+// ── Mobile ───────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .channel-detail {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .detail-header {
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .back-link {
+      flex: 1;
+    }
+
+    .btn-pipeline {
+      white-space: nowrap;
+    }
+  }
+
+  .header-info {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    h1 { font-size: 18px; }
+  }
+
+  .generate-row {
+    flex-direction: column;
+  }
+
+  .topic-input, .context-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .btn-generate {
+    width: 100%;
+    text-align: center;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

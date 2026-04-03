@@ -1,0 +1,64 @@
+<div class="review-page">
+
+  <!-- Header -->
+  <div class="review-header">
+    <div class="header-left">
+      <h1>Revisione Mattutina</h1>
+      <span class="badge-pending" *ngIf="totalPending > 0">
+        {{ totalPending }} in attesa
+      </span>
+      <span class="badge-empty" *ngIf="totalPending === 0 && !loading">
+        Nessun post da revisionare
+      </span>
+    </div>
+    <div class="header-right">
+      <span class="last-updated" *ngIf="lastUpdated">
+        Aggiornato {{ lastUpdated | date:'HH:mm:ss' }}
+      </span>
+      <button class="btn btn-ghost btn-sm" (click)="load()" [disabled]="loading">
+        ↻ Aggiorna
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="loading">
+    <p>Caricamento contenuti in revisione…</p>
+  </div>
+
+  <!-- Sezioni per canale -->
+  <div
+    class="channel-section"
+    *ngFor="let section of sections; trackBy: trackBySection"
+    [class.empty]="section.contents.length === 0"
+  >
+    <div class="section-header">
+      <div class="channel-info">
+        <span class="channel-type">{{ section.channel.channel_type }}</span>
+        <h2 class="channel-name">{{ section.channel.name }}</h2>
+      </div>
+      <span class="pending-badge" *ngIf="section.pending_count > 0">
+        {{ section.pending_count }} pending
+      </span>
+    </div>
+
+    <p class="empty-message" *ngIf="section.contents.length === 0">
+      Nessun contenuto in attesa di revisione per questo canale.
+    </p>
+
+    <div class="content-grid" *ngIf="section.contents.length > 0">
+      <app-review-content-card
+        *ngFor="let content of section.contents; trackBy: trackByContent"
+        [content]="content"
+        [channelPlatforms]="channelPlatforms(section)"
+        (dismissed)="onDismissed($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Empty state globale -->
+  <div class="global-empty" *ngIf="!loading && sections.length === 0">
+    <p>Nessun canale attivo trovato.</p>
+  </div>
+
+</div>

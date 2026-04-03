@@ -57,3 +57,10 @@
   padding: 8px 12px;
   border-radius: 6px;
 }
+
+// ── Mobile ───────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -66,3 +66,47 @@
   overflow-y: auto;
   padding: 32px;
 }
+
+// ── Bottom nav (mobile only) ─────────────────────────────────
+.bottom-nav {
+  display: none;
+}
+
+// ── Mobile breakpoint ────────────────────────────────────────
+@media (max-width: 640px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    padding: 16px 16px 80px;
+  }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #16162a;
+    border-top: 1px solid #2a2a45;
+    z-index: 100;
+
+    a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 4px 12px;
+      color: #9ca3af;
+      text-decoration: none;
+      font-size: 10px;
+      transition: color 0.2s;
+
+      .nav-icon { font-size: 20px; }
+
+      &.active { color: #a78bfa; }
+    }
+  }
+}

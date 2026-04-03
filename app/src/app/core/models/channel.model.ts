@@ -9,7 +9,8 @@ export type ChannelType =
   | 'finance'
   | 'entertainment'
   | 'health'
-  | 'science';
+  | 'science'
+  | 'wisdom_quotes';
 
 export interface PersonaConfig {
   name: string;
@@ -58,4 +59,9 @@ export interface ChannelUpdate {
   persona?: Partial<PersonaConfig>;
   credentials?: Record<string, string>;
   content_config?: Partial<ContentConfig>;
+}
+
+export interface FetchQuotesRequest {
+  theme: string;
+  count?: number;
 }

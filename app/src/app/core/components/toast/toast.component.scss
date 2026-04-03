@@ -141,3 +141,34 @@
     transform: translateX(0);
   }
 }
+
+// ── Mobile ───────────────────────────────────────────────────
+@media (max-width: 640px) {
+  :host {
+    top: auto;
+    bottom: 72px; // above bottom nav
+    right: 16px;
+    left: 16px;
+  }
+
+  .toast-container {
+    align-items: stretch;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  @keyframes toast-enter {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

@@ -46,6 +46,7 @@ export class ChannelsPage implements OnInit {
     { value: 'entertainment',     label: '🎬 Entertainment' },
     { value: 'health',            label: '🩺 Salute' },
     { value: 'science',           label: '🔬 Scienza' },
+    { value: 'wisdom_quotes',     label: '🧘 Saggezza / Quote' },
   ];
 
   ngOnInit(): void {
@@ -69,7 +70,7 @@ export class ChannelsPage implements OnInit {
   }
 
   onPipelineTriggered(taskId: string): void {
-    this.toast.show(`Pipeline avviata — task: ${taskId.slice(0, 8)}...`, 'success');
+    this.toast.show('success', `Pipeline avviata — task: ${taskId.slice(0, 8)}...`);
   }
 
   autoSlug(): void {
@@ -106,7 +107,7 @@ export class ChannelsPage implements OnInit {
       next: (channel) => {
         this.channels.push(channel);
         this.showForm = false;
-        this.toast.show(`Canale "${channel.name}" creato con successo`, 'success');
+        this.toast.show('success', `Canale "${channel.name}" creato con successo`);
       },
     });
   }

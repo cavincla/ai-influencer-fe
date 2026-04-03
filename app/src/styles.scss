@@ -9,4 +9,12 @@ html, body {
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   background-color: #0f0f1a;
   color: #e0e0e0;
+  overflow-x: hidden;
+}
+
+// Touch target minimum size for interactive elements
+@media (max-width: 640px) {
+  button, a, select, input[type="number"] {
+    min-height: 44px;
+  }
 }

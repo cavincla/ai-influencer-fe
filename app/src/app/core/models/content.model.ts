@@ -28,6 +28,7 @@ export interface ValidationResult {
 export interface GeneratedContent {
   id: number;
   topic_id: number | null;
+  channel_id: number | null;
   status: ContentStatus;
   hook: string | null;
   script: string | null;

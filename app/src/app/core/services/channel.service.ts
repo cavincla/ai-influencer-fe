@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Channel, ChannelCreate, ChannelListResponse, ChannelUpdate } from '../models/channel.model';
+import { Channel, ChannelCreate, ChannelListResponse, ChannelUpdate, FetchQuotesRequest } from '../models/channel.model';
 import { ContentListResponse, ContentStatus } from '../models/content.model';
 import { environment } from '../../../environments/environment';
 
@@ -48,6 +48,13 @@ export class ChannelService {
     return this.http.post<{ task_id: string; status: string }>(
       `${this.baseUrl}/${id}/pipeline`,
       {}
+    );
+  }
+
+  fetchQuotes(id: number, body: FetchQuotesRequest): Observable<{ task_id: string; status: string; theme: string; count: number }> {
+    return this.http.post<{ task_id: string; status: string; theme: string; count: number }>(
+      `${this.baseUrl}/${id}/fetch-quotes`,
+      body
     );
   }
 }

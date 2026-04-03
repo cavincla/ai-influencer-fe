@@ -1,0 +1,101 @@
+<div class="review-card" [class.expanded]="expanded" [class.loading]="loading">
+
+  <!-- Thumbnail -->
+  <div class="card-thumb" *ngIf="imageSrc">
+    <img [src]="imageSrc" alt="preview" />
+  </div>
+
+  <!-- Corpo -->
+  <div class="card-body">
+
+    <!-- Platform badges -->
+    <div class="platforms">
+      <span class="badge-platform" *ngFor="let p of platforms">
+        {{ platformIcon[p] ?? '🌐' }} {{ p }}
+      </span>
+    </div>
+
+    <!-- Hook -->
+    <p class="hook">{{ hook }}</p>
+
+    <!-- Script preview -->
+    <p class="script">{{ scriptPreview }}</p>
+    <button class="btn-link" (click)="toggleExpand()"
+      *ngIf="!expanded && (content.content_versions?.['it']?.script ?? content.script ?? '').length > 100">
+      Mostra tutto
+    </button>
+    <button class="btn-link" (click)="toggleExpand()" *ngIf="expanded">Riduci</button>
+
+    <!-- Scheduled info -->
+    <p class="scheduled-info" *ngIf="content.scheduled_for">
+      📅 Programmato: {{ content.scheduled_for | date:'dd/MM/yy HH:mm' }}
+    </p>
+
+    <!-- ── Dry-run result ── -->
+    <div class="dryrun-result" *ngIf="dryRunResult">
+      <p class="dryrun-title">✅ Simulazione completata — nessun post pubblicato</p>
+      <div *ngFor="let e of dryRunEntries()" class="dryrun-entry">
+        <span class="dryrun-platform">{{ platformIcon[e.platform] ?? '🌐' }} {{ e.platform }}</span>
+        <span class="dryrun-url">{{ e.url }}</span>
+      </div>
+      <button class="btn-link" (click)="dryRunResult = null">Chiudi</button>
+    </div>
+
+    <!-- ── Selezione piattaforme per publish / dry-run ── -->
+    <div class="panel" *ngIf="publishExpanded">
+      <p class="panel-label">Piattaforme:</p>
+      <label *ngFor="let p of platformEntries()" class="platform-checkbox">
+        <input type="checkbox" [(ngModel)]="selectedPlatforms[p.key]" />
+        {{ p.label }}
+      </label>
+      <div class="panel-actions">
+        <button class="btn btn-primary btn-sm" (click)="confirmPublish(false)" [disabled]="loading">
+          ↑ Pubblica ora
+        </button>
+        <button class="btn btn-warning btn-sm" (click)="confirmPublish(true)" [disabled]="loading">
+          🔍 Test dry-run
+        </button>
+        <button class="btn btn-ghost btn-sm" (click)="togglePublish()">Annulla</button>
+      </div>
+    </div>
+
+    <!-- ── Scheduler pubblicazione ── -->
+    <div class="panel" *ngIf="scheduleExpanded">
+      <p class="panel-label">Programma pubblicazione (fuso Roma):</p>
+      <div class="schedule-row">
+        <label>
+          Data
+          <input type="date" [(ngModel)]="scheduleDate" [min]="todayDate" />
+        </label>
+        <label>
+          Ora
+          <input type="time" [(ngModel)]="scheduleTime" />
+        </label>
+      </div>
+      <div class="panel-actions">
+        <button class="btn btn-primary btn-sm" (click)="confirmSchedule()" [disabled]="loading || !scheduleDate">
+          📅 Salva schedule
+        </button>
+        <button class="btn btn-ghost btn-sm" (click)="toggleSchedule()">Annulla</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer azioni (nascosto se un panel è aperto) -->
+  <div class="card-actions" *ngIf="!publishExpanded && !scheduleExpanded && !dryRunResult">
+    <button class="btn btn-success btn-sm" (click)="approve()" [disabled]="loading">
+      ✓ Approva
+    </button>
+    <button class="btn btn-danger btn-sm" (click)="reject()" [disabled]="loading">
+      ✗ Scarta
+    </button>
+    <button class="btn btn-primary btn-sm" (click)="togglePublish()" [disabled]="loading">
+      ↑ Pubblica
+    </button>
+    <button class="btn btn-secondary btn-sm" (click)="toggleSchedule()" [disabled]="loading">
+      📅
+    </button>
+  </div>
+
+</div>

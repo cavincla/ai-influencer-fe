@@ -32,6 +32,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/channels/pages/channel-detail/channel-detail').then((m) => m.ChannelDetailPage),
       },
+      {
+        path: 'review',
+        loadComponent: () =>
+          import('./features/review/pages/review-dashboard/review-dashboard').then((m) => m.ReviewDashboardPage),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

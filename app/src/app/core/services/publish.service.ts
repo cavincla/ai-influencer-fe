@@ -8,6 +8,7 @@ export interface PublishResponse {
   task_id: string;
   status: string;
   platforms: string[];
+  dry_run: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -15,9 +16,10 @@ export class PublishService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/api/publish`;
 
-  publish(contentId: number, platforms?: string[]): Observable<PublishResponse> {
+  publish(contentId: number, platforms?: string[], dryRun = false): Observable<PublishResponse> {
     return this.http.post<PublishResponse>(`${this.baseUrl}/${contentId}`, {
       platforms: platforms ?? null,
+      dry_run: dryRun,
     });
   }
 }

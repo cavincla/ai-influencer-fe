@@ -29,6 +29,20 @@ export class ChannelDetailPage implements OnInit {
   newTopic = '';
   newContext = '';
 
+  // Wisdom quotes fields (only used for wisdom_quotes channels)
+  quoteTheme = 'wisdom';
+  quoteCount = 5;
+  fetchingQuotes = false;
+
+  readonly QUOTE_THEMES = [
+    'wisdom', 'philosophy', 'life', 'motivational',
+    'happiness', 'japanese', 'inspirational', 'sadness',
+  ];
+
+  get isWisdomChannel(): boolean {
+    return this.channel?.channel_type === 'wisdom_quotes';
+  }
+
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadChannel(id);
@@ -63,7 +77,7 @@ export class ChannelDetailPage implements OnInit {
     this.generating = true;
     this.channelService.generate(this.channel.id, this.newTopic, this.newContext).subscribe({
       next: (res) => {
-        this.toast.show(`Generazione avviata — task: ${res.task_id.slice(0, 8)}...`, 'success');
+        this.toast.show('success', `Generazione avviata — task: ${res.task_id.slice(0, 8)}...`);
         this.newTopic = '';
         this.newContext = '';
         this.generating = false;
@@ -75,7 +89,19 @@ export class ChannelDetailPage implements OnInit {
   runPipeline(): void {
     if (!this.channel) return;
     this.channelService.runPipeline(this.channel.id).subscribe({
-      next: (res) => this.toast.show(`Pipeline avviata — task: ${res.task_id.slice(0, 8)}...`, 'success'),
+      next: (res) => this.toast.show('success', `Pipeline avviata — task: ${res.task_id.slice(0, 8)}...`),
+    });
+  }
+
+  fetchQuotes(): void {
+    if (!this.channel) return;
+    this.fetchingQuotes = true;
+    this.channelService.fetchQuotes(this.channel.id, { theme: this.quoteTheme, count: this.quoteCount }).subscribe({
+      next: (res) => {
+        this.toast.show('success', `Fetch citazioni avviato (${res.theme}) — task: ${res.task_id.slice(0, 8)}...`);
+        this.fetchingQuotes = false;
+      },
+      error: () => (this.fetchingQuotes = false),
     });
   }
 }

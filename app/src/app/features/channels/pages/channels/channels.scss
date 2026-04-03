@@ -179,3 +179,38 @@
     font-size: 12px;
   }
 }
+
+// ── Mobile ───────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .channels-page {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-new {
+    width: 100%;
+    text-align: center;
+  }
+
+  .create-form {
+    padding: 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .channels-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .loading, .empty {
+    padding: 32px 16px;
+  }
+}

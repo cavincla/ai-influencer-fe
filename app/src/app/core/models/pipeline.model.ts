@@ -1,6 +1,7 @@
 export interface PipelineConfig {
   auto_publish: boolean;
   pipeline_hour: number;
+  pipeline_minute: number;
   pipeline_topics_per_run: number;
   target_platforms: string[];
 }

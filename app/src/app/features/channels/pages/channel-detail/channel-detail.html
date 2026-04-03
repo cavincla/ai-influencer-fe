@@ -11,16 +11,38 @@
       <button class="btn-pipeline" (click)="runPipeline()">▶ Pipeline</button>
     </div>
 
-    <!-- Generate single content -->
+    <!-- Generate single content / Fetch quotes (conditional by channel type) -->
     <div class="generate-section">
-      <h2>Genera contenuto</h2>
-      <div class="generate-row">
-        <input [(ngModel)]="newTopic" placeholder="Topic (es. 'anime estate 2025')" class="topic-input" />
-        <input [(ngModel)]="newContext" placeholder="Contesto aggiuntivo (opzionale)" class="context-input" />
-        <button class="btn-generate" [disabled]="!newTopic.trim() || generating" (click)="generateContent()">
-          {{ generating ? '⏳ ...' : '✨ Genera' }}
-        </button>
-      </div>
+      @if (isWisdomChannel) {
+        <h2>Fetch Citazioni</h2>
+        <div class="generate-row">
+          <select [(ngModel)]="quoteTheme" class="topic-input">
+            @for (theme of QUOTE_THEMES; track theme) {
+              <option [value]="theme">{{ theme }}</option>
+            }
+          </select>
+          <input
+            type="number"
+            [(ngModel)]="quoteCount"
+            min="1"
+            max="20"
+            class="context-input"
+            placeholder="Numero citazioni"
+          />
+          <button class="btn-generate" [disabled]="fetchingQuotes" (click)="fetchQuotes()">
+            {{ fetchingQuotes ? '⏳ ...' : '🧘 Fetch Citazioni' }}
+          </button>
+        </div>
+      } @else {
+        <h2>Genera contenuto</h2>
+        <div class="generate-row">
+          <input [(ngModel)]="newTopic" placeholder="Topic (es. 'anime estate 2025')" class="topic-input" />
+          <input [(ngModel)]="newContext" placeholder="Contesto aggiuntivo (opzionale)" class="context-input" />
+          <button class="btn-generate" [disabled]="!newTopic.trim() || generating" (click)="generateContent()">
+            {{ generating ? '⏳ ...' : '✨ Genera' }}
+          </button>
+        </div>
+      }
     </div>
   }
 
