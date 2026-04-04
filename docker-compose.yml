@@ -1,6 +1,6 @@
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: .build/dockerfiles/Dockerfile
       target: develop
@@ -17,3 +17,6 @@ services:
       - APP_ENVIRONMENT=local
       - TERM=xterm-256color
       - TZ=Europe/Rome
+    entrypoint: ["bash", "-c"]
+    command: >
+      "cd /app && npm install --prefer-offline --no-audit -q && ng serve --host 0.0.0.0 --port 4200"
