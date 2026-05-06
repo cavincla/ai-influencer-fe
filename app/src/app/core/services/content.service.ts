@@ -49,4 +49,21 @@ export class ContentService {
   validate(id: number): Observable<ValidationResult> {
     return this.http.get<ValidationResult>(`${this.baseUrl}/${id}/validate`);
   }
+
+  resetAll(): Observable<{ deleted: boolean; message: string }> {
+    return this.http.delete<{ deleted: boolean; message: string }>(`${this.baseUrl}/reset`);
+  }
+
+  updateScript(id: number, data: { hook?: string; script?: string; cta?: string; hashtags?: string[] }): Observable<GeneratedContent> {
+    return this.http.patch<GeneratedContent>(`${this.baseUrl}/${id}/script`, data);
+  }
+
+  generateMedia(id: number, lang: string = 'it'): Observable<{ task_id: string; status: string; content_id: number }> {
+    const params = new HttpParams().set('lang', lang);
+    return this.http.post<{ task_id: string; status: string; content_id: number }>(
+      `${this.baseUrl}/${id}/generate-media`,
+      {},
+      { params }
+    );
+  }
 }

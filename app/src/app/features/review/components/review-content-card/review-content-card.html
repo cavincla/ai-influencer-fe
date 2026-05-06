@@ -1,8 +1,9 @@
 <div class="review-card" [class.expanded]="expanded" [class.loading]="loading">
 
-  <!-- Thumbnail -->
-  <div class="card-thumb" *ngIf="imageSrc">
-    <img [src]="imageSrc" alt="preview" />
+  <!-- Thumbnail / Video -->
+  <div class="card-media" *ngIf="videoSrc || imageSrc">
+    <video *ngIf="videoSrc" class="card-video" [src]="videoSrc" controls playsinline></video>
+    <img *ngIf="!videoSrc && imageSrc" [src]="imageSrc" alt="preview" />
   </div>
 
   <!-- Corpo -->
@@ -13,25 +14,83 @@
       <span class="badge-platform" *ngFor="let p of platforms">
         {{ platformIcon[p] ?? '🌐' }} {{ p }}
       </span>
+      <span class="badge-status">{{ statusLabel[content.status] }}</span>
     </div>
 
-    <!-- Hook -->
-    <p class="hook">{{ hook }}</p>
+    <!-- ── Vista testo (non editing) ── -->
+    <ng-container *ngIf="!isEditing">
 
-    <!-- Script preview -->
-    <p class="script">{{ scriptPreview }}</p>
-    <button class="btn-link" (click)="toggleExpand()"
-      *ngIf="!expanded && (content.content_versions?.['it']?.script ?? content.script ?? '').length > 100">
-      Mostra tutto
-    </button>
-    <button class="btn-link" (click)="toggleExpand()" *ngIf="expanded">Riduci</button>
+      <!-- Hook -->
+      <p class="hook">{{ hook }}</p>
+
+      <!-- Script -->
+      <p class="script">{{ scriptPreview }}</p>
+      <button class="btn-link" (click)="toggleExpand()"
+        *ngIf="!expanded && fullScript.length > 120">
+        Mostra tutto
+      </button>
+      <button class="btn-link" (click)="toggleExpand()" *ngIf="expanded">Riduci</button>
+
+      <!-- CTA (solo quando espanso) -->
+      <p class="cta-text" *ngIf="expanded && cta">
+        <strong>CTA:</strong> {{ cta }}
+      </p>
+
+      <!-- Hashtags (solo quando espanso) -->
+      <div class="hashtags" *ngIf="expanded && hashtags.length">
+        <span class="badge-tag" *ngFor="let tag of hashtags">#{{ tag }}</span>
+      </div>
+
+      <!-- Captions (solo quando espanso) -->
+      <div class="captions" *ngIf="expanded && content.captions">
+        <p class="caption-label">Caption:</p>
+        <p class="caption-text" *ngFor="let cap of content.captions | keyvalue">
+          <span class="caption-platform">{{ platformIcon[cap.key] ?? '🌐' }} {{ cap.key }}</span>
+          {{ cap.value }}
+        </p>
+      </div>
+
+    </ng-container>
+
+    <!-- ── Modalità editing ── -->
+    <ng-container *ngIf="isEditing">
+      <label class="edit-label">Hook</label>
+      <textarea class="edit-textarea" rows="2" [(ngModel)]="editHook"></textarea>
+
+      <label class="edit-label">Script</label>
+      <textarea class="edit-textarea edit-script" rows="8" [(ngModel)]="editScript"></textarea>
+
+      <label class="edit-label">CTA</label>
+      <textarea class="edit-textarea" rows="2" [(ngModel)]="editCta"></textarea>
+
+      <div class="edit-actions">
+        <button class="btn btn-success btn-sm" (click)="saveEdit()" [disabled]="loading">
+          Salva
+        </button>
+        <button class="btn btn-ghost btn-sm" (click)="cancelEdit()">Annulla</button>
+      </div>
+    </ng-container>
 
     <!-- Scheduled info -->
     <p class="scheduled-info" *ngIf="content.scheduled_for">
       📅 Programmato: {{ content.scheduled_for | date:'dd/MM/yy HH:mm' }}
     </p>
 
-    <!-- ── Dry-run result ── -->
+    <!-- Genera video banner -->
+    <div class="generate-media-banner" *ngIf="!hasVideo && !generatingMedia && !isEditing">
+      <p class="generate-media-hint">Il testo è pronto. Genera audio e video quando sei soddisfatto.</p>
+      <button class="btn btn-primary btn-sm" (click)="generateMedia()" [disabled]="!canGenerateMedia">
+        Genera Video
+      </button>
+    </div>
+
+    <!-- In generazione -->
+    <div class="generating-banner" *ngIf="generatingMedia">
+      <span class="spinner"></span>
+      <span>Generazione audio e video in corso…</span>
+    </div>
+
+    <!-- Dry-run result -->
     <div class="dryrun-result" *ngIf="dryRunResult">
       <p class="dryrun-title">✅ Simulazione completata — nessun post pubblicato</p>
       <div *ngFor="let e of dryRunEntries()" class="dryrun-entry">
@@ -41,7 +100,7 @@
       <button class="btn-link" (click)="dryRunResult = null">Chiudi</button>
     </div>
 
-    <!-- ── Selezione piattaforme per publish / dry-run ── -->
+    <!-- Panel publish -->
     <div class="panel" *ngIf="publishExpanded">
       <p class="panel-label">Piattaforme:</p>
       <label *ngFor="let p of platformEntries()" class="platform-checkbox">
@@ -59,7 +118,7 @@
       </div>
     </div>
 
-    <!-- ── Scheduler pubblicazione ── -->
+    <!-- Panel schedule -->
     <div class="panel" *ngIf="scheduleExpanded">
       <p class="panel-label">Programma pubblicazione (fuso Roma):</p>
       <div class="schedule-row">
@@ -82,15 +141,18 @@
 
   </div>
 
-  <!-- Footer azioni (nascosto se un panel è aperto) -->
-  <div class="card-actions" *ngIf="!publishExpanded && !scheduleExpanded && !dryRunResult">
+  <!-- Footer azioni -->
+  <div class="card-actions" *ngIf="!publishExpanded && !scheduleExpanded && !dryRunResult && !isEditing">
+    <button class="btn btn-secondary btn-sm" (click)="startEdit(); expanded = true" [disabled]="loading">
+      ✏ Edita
+    </button>
     <button class="btn btn-success btn-sm" (click)="approve()" [disabled]="loading">
       ✓ Approva
     </button>
     <button class="btn btn-danger btn-sm" (click)="reject()" [disabled]="loading">
       ✗ Scarta
     </button>
-    <button class="btn btn-primary btn-sm" (click)="togglePublish()" [disabled]="loading">
+    <button class="btn btn-primary btn-sm" (click)="togglePublish()" [disabled]="loading || !hasVideo">
       ↑ Pubblica
     </button>
     <button class="btn btn-secondary btn-sm" (click)="toggleSchedule()" [disabled]="loading">

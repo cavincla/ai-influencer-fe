@@ -25,37 +25,74 @@
     </div>
   }
 
+  <!-- Genera video per lingua corrente -->
+  @if (canGenerateMedia) {
+    <div class="generate-lang-banner">
+      <span>Nessun video in {{ lang.toUpperCase() }}</span>
+      <button class="btn-generate" (click)="generateMedia()" [disabled]="generatingMedia">
+        Genera Video {{ lang.toUpperCase() }}
+      </button>
+    </div>
+  }
+  @if (generatingMedia) {
+    <div class="generating-lang-banner">
+      <span class="spinner-inline"></span>
+      Generazione video {{ lang.toUpperCase() }} in corso…
+    </div>
+  }
+
   <!-- Hook -->
   @if (activeHook) {
     <div class="card-hook">"{{ activeHook }}"</div>
   }
 
-  <!-- Script -->
+  <!-- Script (troncato / completo) -->
   @if (activeScript) {
-    <div class="card-script">
-      {{ activeScript | slice:0:220 }}{{ activeScript!.length > 220 ? '...' : '' }}
-    </div>
-  }
-
-  <!-- CTA -->
-  @if (content.cta) {
-    <div class="card-cta">→ {{ content.cta }}</div>
-  }
-
-  <!-- Caption -->
-  @if (caption) {
-    <div class="card-caption">
-      <span class="label">Caption:</span> {{ caption | slice:0:120 }}...
-    </div>
-  }
-
-  <!-- Hashtags -->
-  @if (content.hashtags?.length) {
-    <div class="card-hashtags">
-      @for (tag of content.hashtags!.slice(0, 6); track tag) {
-        <span class="hashtag">{{ tag }}</span>
+    <div class="card-script" [class.expanded]="expanded">
+      @if (expanded) {
+        {{ activeScript }}
+      } @else {
+        {{ activeScript | slice:0:220 }}{{ activeScript!.length > 220 ? '…' : '' }}
       }
     </div>
+    @if (activeScript!.length > 220) {
+      <button class="btn-expand" (click)="toggleExpand()">
+        {{ expanded ? '▲ Riduci' : '▼ Leggi tutto' }}
+      </button>
+    }
+  }
+
+  <!-- Dettagli espansi: CTA, caption, hashtags completi -->
+  @if (expanded) {
+    @if (content.cta) {
+      <div class="card-cta card-cta--full">→ {{ content.cta }}</div>
+    }
+    @if (caption) {
+      <div class="card-caption card-caption--full">
+        <span class="label">Caption:</span> {{ caption }}
+      </div>
+    }
+    @if (content.hashtags?.length) {
+      <div class="card-hashtags">
+        @for (tag of content.hashtags!; track tag) {
+          <span class="hashtag">{{ tag }}</span>
+        }
+      </div>
+    }
+  } @else {
+    @if (content.cta) {
+      <div class="card-cta">→ {{ content.cta | slice:0:80 }}{{ content.cta!.length > 80 ? '…' : '' }}</div>
+    }
+    @if (content.hashtags?.length) {
+      <div class="card-hashtags">
+        @for (tag of content.hashtags!.slice(0, 5); track tag) {
+          <span class="hashtag">{{ tag }}</span>
+        }
+        @if (content.hashtags!.length > 5) {
+          <span class="hashtag hashtag--more">+{{ content.hashtags!.length - 5 }}</span>
+        }
+      </div>
+    }
   }
 
   <!-- Thumbnail preview -->
@@ -131,6 +168,9 @@
         <button class="btn-validate" [disabled]="validating" (click)="validate()">
           {{ validating ? '⏳ ...' : '🔍 Valida' }}
         </button>
+      }
+      @if (hasVideoForLang && !generatingMedia && (content.status === 'pending_review' || content.status === 'approved')) {
+        <button class="btn-regen" (click)="generateMedia()">↻ Rigenera {{ lang.toUpperCase() }}</button>
       }
       @if (content.status === 'pending_review') {
         <button class="btn-approve" (click)="approve()">✓ Approva</button>

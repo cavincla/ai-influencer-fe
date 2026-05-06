@@ -80,6 +80,25 @@
   font-size: 13px;
   color: #d1d5db;
   line-height: 1.5;
+
+  &.expanded {
+    white-space: pre-wrap;
+  }
+}
+
+.btn-expand {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  color: #a78bfa;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 1; }
 }
 
 .card-cta {
@@ -107,6 +126,17 @@
   background: #1e1b4b;
   padding: 1px 6px;
   border-radius: 4px;
+
+  &--more {
+    color: #6b7280;
+    background: #252545;
+    font-style: italic;
+  }
+}
+
+.card-cta--full,
+.card-caption--full {
+  white-space: pre-wrap;
 }
 
 // Media preview
@@ -295,6 +325,20 @@
   &:disabled { opacity: 0.5; cursor: default; }
 }
 
+.btn-regen {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #1a2a1a;
+  color: #6ee7b7;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.85; }
+}
+
 .btn-publish {
   font-size: 12px;
   font-weight: 600;
@@ -328,4 +372,63 @@
       text-align: center;
     }
   }
+}
+
+/* ── Generate media for language ── */
+.generate-lang-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(137, 180, 250, 0.08);
+  border: 1px solid rgba(137, 180, 250, 0.2);
+  border-radius: 6px;
+  margin: 6px 0;
+  font-size: 11px;
+  color: var(--text-muted, #a6adc8);
+}
+
+.btn-generate {
+  background: #89b4fa;
+  color: #1e1e2e;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.generating-lang-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(137, 180, 250, 0.06);
+  border-radius: 6px;
+  margin: 6px 0;
+  font-size: 11px;
+  color: #89b4fa;
+}
+
+.spinner-inline {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(137, 180, 250, 0.3);
+  border-top-color: #89b4fa;
+  border-radius: 50%;
+  animation: spin-inline 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin-inline {
+  to { transform: rotate(360deg); }
 }

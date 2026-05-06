@@ -66,11 +66,17 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "poll": 1000
+          },
           "configurations": {
             "production": {
               "buildTarget": "ai-influencer-fe:build:production"
             },
             "development": {
+              "buildTarget": "ai-influencer-fe:build:development"
+            },
+            "local": {
               "buildTarget": "ai-influencer-fe:build:development"
             }
           },
@@ -101,5 +107,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "5e660dcc-02e0-439c-9cf6-2580acaecb31"
   }
 }

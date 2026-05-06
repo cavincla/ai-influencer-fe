@@ -15,6 +15,8 @@ export interface ScriptVersion {
   mood?: string;
   virality_score?: number;
   language?: string;
+  audio_path?: string | null;
+  video_path?: string | null;
 }
 
 export interface ValidationResult {

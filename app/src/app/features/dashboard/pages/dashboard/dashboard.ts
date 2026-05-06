@@ -6,6 +6,7 @@ import { switchMap, takeWhile } from 'rxjs/operators';
 import { TrendingTopicsComponent } from '../../components/trending-topics/trending-topics';
 import { ContentListComponent } from '../../components/content-list/content-list';
 import { PipelineService } from '../../../../core/services/pipeline.service';
+import { ContentService } from '../../../../core/services/content.service';
 import { PipelineConfig } from '../../../../core/models/pipeline.model';
 
 @Component({
@@ -17,10 +18,13 @@ import { PipelineConfig } from '../../../../core/models/pipeline.model';
 })
 export class DashboardPage implements OnInit, OnDestroy {
   private pipelineService = inject(PipelineService);
+  private contentService = inject(ContentService);
 
   config: PipelineConfig | null = null;
   triggerStatus: 'idle' | 'running' | 'done' | 'error' = 'idle';
   activeTaskId: string | null = null;
+
+  resetting = false;
 
   // Schedule editor
   editingSchedule = false;
@@ -87,6 +91,18 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   cancelScheduleEdit(): void {
     this.editingSchedule = false;
+  }
+
+  resetAllContent(): void {
+    if (!confirm('Eliminare TUTTI i contenuti generati? Questa azione è irreversibile.')) return;
+    this.resetting = true;
+    this.contentService.resetAll().subscribe({
+      next: () => {
+        this.resetting = false;
+        this.triggerStatus = 'idle';
+      },
+      error: () => (this.resetting = false),
+    });
   }
 
   get scheduleLabel(): string {

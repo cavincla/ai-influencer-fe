@@ -141,6 +141,21 @@
   &:disabled { opacity: 0.5; cursor: default; }
 }
 
+.btn-reset {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  cursor: pointer;
+  background: transparent;
+  color: #9ca3af;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) { background: #3b1a1a; color: #f87171; border-color: #f87171; }
+  &:disabled { opacity: 0.4; cursor: default; }
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: 320px 1fr;

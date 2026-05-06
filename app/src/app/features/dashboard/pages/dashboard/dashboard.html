@@ -69,6 +69,15 @@
         }
       </button>
 
+      <!-- Reset contenuti -->
+      <button
+        class="btn-reset"
+        [disabled]="resetting"
+        (click)="resetAllContent()"
+        title="Elimina tutti i contenuti generati">
+        {{ resetting ? '...' : '🗑 Reset' }}
+      </button>
+
     </div>
   </header>
 
