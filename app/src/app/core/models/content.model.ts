@@ -5,7 +5,8 @@ export type ContentStatus =
   | 'rejected'
   | 'publishing'
   | 'published'
-  | 'failed';
+  | 'failed'
+  | 'scheduled';
 
 export interface ScriptVersion {
   hook: string;

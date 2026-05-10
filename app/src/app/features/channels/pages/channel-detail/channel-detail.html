@@ -1,5 +1,23 @@
 <div class="channel-detail">
 
+  @if (overdueContents.length > 0 && !overdueAlertDismissed) {
+    <div class="overdue-alert">
+      <div class="overdue-alert__header">
+        <span>⚠️ {{ overdueContents.length }} post non pubblicati mentre l'app era offline</span>
+        <button class="overdue-alert__dismiss" (click)="overdueAlertDismissed = true">✕</button>
+      </div>
+      <ul class="overdue-alert__list">
+        @for (item of overdueContents; track item.id) {
+          <li>
+            <span class="overdue-alert__time">{{ item.scheduled_for | date:'dd/MM HH:mm':'Europe/Rome' }}</span>
+            <span class="overdue-alert__title">{{ item.hook || item.script | slice:0:60 }}…</span>
+          </li>
+        }
+      </ul>
+      <p class="overdue-alert__note">Il sistema li pubblicherà entro i prossimi 5 minuti automaticamente.</p>
+    </div>
+  }
+
   @if (channel) {
     <div class="detail-header">
       <div class="back-link" routerLink="/channels">← Canali</div>

@@ -124,6 +124,59 @@
   font-size: 14px;
 }
 
+// ── Overdue alert banner ──────────────────────────────────────
+.overdue-alert {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #fbbf24;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+
+  &__dismiss {
+    background: none;
+    border: none;
+    color: #fbbf24;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+    li {
+      display: flex;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--color-text-secondary, #9ca3af);
+      padding: 3px 0;
+    }
+  }
+
+  &__time {
+    color: #fbbf24;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  &__note {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, #9ca3af);
+    margin: 0;
+  }
+}
+
 // ── Mobile ───────────────────────────────────────────────────
 @media (max-width: 640px) {
   .channel-detail {

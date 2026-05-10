@@ -61,6 +61,7 @@ export class ReviewContentCardComponent implements OnDestroy {
     publishing: 'Pubblicazione...',
     published: 'Pubblicato',
     failed: 'Fallito',
+    scheduled: 'Schedulato',
   };
 
   get hook(): string {

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { interval, Subscription } from 'rxjs';
 import { GeneratedContent, ContentStatus, ValidationResult } from '../../../../core/models/content.model';
 import { ContentService } from '../../../../core/services/content.service';
@@ -9,7 +10,7 @@ import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-content-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './content-card.html',
   styleUrl: './content-card.scss',
 })
@@ -25,6 +26,11 @@ export class ContentCardComponent implements OnDestroy {
   generatingMedia = false;
   expanded = false;
   lang: 'it' | 'en' = 'it';
+  scheduleExpanded = false;
+  scheduleDate = '';
+  scheduleTime = '09:00';
+  bilingualMode = false;
+  cancelling = false;
   private pollSub: Subscription | null = null;
   private _regenStartedAt: string | null = null;
 
@@ -43,6 +49,7 @@ export class ContentCardComponent implements OnDestroy {
     publishing: 'Pubblicazione...',
     published: 'Pubblicato',
     failed: 'Fallito',
+    scheduled: 'Schedulato',
   };
 
   ngOnDestroy(): void {
@@ -119,13 +126,21 @@ export class ContentCardComponent implements OnDestroy {
     return !!this.langVideoPath;
   }
 
+  get canBilingual(): boolean {
+    return !!(this.content.content_versions?.['en']?.script);
+  }
+
   get canGenerateMedia(): boolean {
     return (
       !this.hasVideoForLang &&
       !this.generatingMedia &&
-      (this.content.status === 'pending_review' || this.content.status === 'approved') &&
+      (this.content.status === 'pending_review' || this.content.status === 'approved' || this.content.status === 'scheduled') &&
       !!(this.content.content_versions?.[this.lang]?.script ?? (this.lang === 'it' ? this.content.script : null))
     );
+  }
+
+  get todayDate(): string {
+    return new Date().toISOString().split('T')[0];
   }
 
   get availableLangs(): string[] {
@@ -137,7 +152,7 @@ export class ContentCardComponent implements OnDestroy {
   generateMedia(): void {
     this.generatingMedia = true;
     this._regenStartedAt = this.content.updated_at ?? new Date().toISOString();
-    this.contentService.generateMedia(this.content.id, this.lang).subscribe({
+    this.contentService.generateMedia(this.content.id, this.lang, this.bilingualMode).subscribe({
       next: () => this._startPolling(),
       error: () => (this.generatingMedia = false),
     });
@@ -203,6 +218,53 @@ export class ContentCardComponent implements OnDestroy {
         this.validating = false;
       },
       error: () => (this.validating = false),
+    });
+  }
+
+  openSchedule(): void {
+    this.scheduleExpanded = !this.scheduleExpanded;
+    if (this.scheduleExpanded) {
+      this.scheduleDate = this.todayDate;
+      this.scheduleTime = '09:00';
+    }
+  }
+
+  confirmSchedule(): void {
+    if (!this.scheduleDate) return;
+    const utcISO = this._romeToUtcISO(this.scheduleDate, this.scheduleTime);
+    this.contentService.schedule(this.content.id, utcISO).subscribe({
+      next: (updated) => {
+        this.content = updated;
+        this.scheduleExpanded = false;
+        this.contentChange.emit(updated);
+      },
+    });
+  }
+
+  // Converte data+ora nel fuso Europe/Rome in una stringa ISO UTC (naive, senza 'Z').
+  // Usa la Intl API per ricavare l'offset Rome↔UTC corretto per quella data specifica
+  // (gestisce automaticamente ora legale estiva CEST +2 e invernale CET +1).
+  private _romeToUtcISO(dateStr: string, timeStr: string): string {
+    // Trick: considera l'input come UTC provvisorio, guarda che ora segna Rome per
+    // quel momento UTC, calcola l'offset, poi sottrae l'offset per ottenere il vero UTC.
+    const candidate = new Date(`${dateStr}T${timeStr}:00Z`);
+    const romeEquiv = new Date(
+      candidate.toLocaleDateString('en-CA', { timeZone: 'Europe/Rome' }) + 'T' +
+      candidate.toLocaleTimeString('en-GB', { timeZone: 'Europe/Rome', hour12: false }) + 'Z'
+    );
+    const offsetMs = romeEquiv.getTime() - candidate.getTime(); // Rome è avanti di UTC
+    return new Date(candidate.getTime() - offsetMs).toISOString().slice(0, 19);
+  }
+
+  cancelSchedule(): void {
+    this.cancelling = true;
+    this.contentService.schedule(this.content.id, null).subscribe({
+      next: (updated) => {
+        this.content = updated;
+        this.cancelling = false;
+        this.contentChange.emit(updated);
+      },
+      error: () => (this.cancelling = false),
     });
   }
 }

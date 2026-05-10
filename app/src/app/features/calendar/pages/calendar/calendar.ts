@@ -88,6 +88,7 @@ export class CalendarPage implements OnInit {
       publishing: 'dot-purple',
       published: 'dot-blue',
       failed: 'dot-red',
+      scheduled: 'dot-purple',
     };
     return map[status] ?? 'dot-grey';
   }

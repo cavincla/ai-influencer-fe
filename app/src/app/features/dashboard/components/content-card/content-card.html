@@ -25,6 +25,21 @@
     </div>
   }
 
+  <!-- Toggle bilingue -->
+  @if (canBilingual) {
+    <div class="bilingual-toggle">
+      <label class="bilingual-toggle__label">
+        <input type="checkbox" [(ngModel)]="bilingualMode" />
+        <span class="bilingual-toggle__text">🌍 Sottotitoli IT + EN</span>
+      </label>
+    </div>
+    @if (bilingualMode && hasVideoForLang) {
+      <div class="bilingual-hint">
+        ⚠️ Il video attuale non include i sottotitoli EN — clicca <strong>Rigenera</strong> per aggiornarlo.
+      </div>
+    }
+  }
+
   <!-- Genera video per lingua corrente -->
   @if (canGenerateMedia) {
     <div class="generate-lang-banner">
@@ -135,7 +150,7 @@
   <!-- Scheduled -->
   @if (content.scheduled_for) {
     <div class="scheduled-info">
-      📅 Pianificato: {{ content.scheduled_for | date:'dd/MM/yy HH:mm' }}
+      📅 Pianificato: {{ content.scheduled_for | date:'dd/MM/yy HH:mm':'Europe/Rome' }}
     </div>
   }
 
@@ -164,13 +179,15 @@
     <span class="created-at">{{ content.created_at | date:'dd/MM/yy HH:mm' }}</span>
 
     <div class="actions">
-      @if (content.status === 'pending_review' || content.status === 'approved') {
+      @if (content.status === 'pending_review' || content.status === 'approved' || content.status === 'scheduled') {
         <button class="btn-validate" [disabled]="validating" (click)="validate()">
           {{ validating ? '⏳ ...' : '🔍 Valida' }}
         </button>
       }
-      @if (hasVideoForLang && !generatingMedia && (content.status === 'pending_review' || content.status === 'approved')) {
-        <button class="btn-regen" (click)="generateMedia()">↻ Rigenera {{ lang.toUpperCase() }}</button>
+      @if (hasVideoForLang && !generatingMedia && (content.status === 'pending_review' || content.status === 'approved' || content.status === 'published' || content.status === 'scheduled')) {
+        <button class="btn-regen" (click)="generateMedia()">
+          {{ content.status === 'published' ? '↻ Rigenera e ripubblica' : (bilingualMode && lang === 'it' ? '↻ Rigenera IT + EN' : '↻ Rigenera ' + lang.toUpperCase()) }}
+        </button>
       }
       @if (content.status === 'pending_review') {
         <button class="btn-approve" (click)="approve()">✓ Approva</button>
@@ -180,8 +197,44 @@
         <button class="btn-publish" [disabled]="publishing" (click)="publish()">
           {{ publishing ? '⏳ ...' : '🚀 Pubblica' }}
         </button>
+        <button class="btn-schedule" (click)="openSchedule()">📅 Schedula</button>
+      }
+      @if (content.status === 'scheduled') {
+        <button class="btn-schedule-info" (click)="openSchedule()">
+          📅 {{ content.scheduled_for | date:'dd/MM HH:mm':'Europe/Rome' }}
+        </button>
+        <button class="btn-cancel-schedule" [disabled]="cancelling" (click)="cancelSchedule()">
+          {{ cancelling ? '⏳' : '✕ Annulla' }}
+        </button>
+      }
+      @if (content.status === 'failed') {
+        <button class="btn-publish" [disabled]="publishing" (click)="publish()">
+          {{ publishing ? '⏳ ...' : '🔄 Riprova pubblicazione' }}
+        </button>
       }
     </div>
   </div>
+
+  @if (scheduleExpanded) {
+    <div class="schedule-panel">
+      <div class="schedule-panel__title">
+        {{ content.status === 'scheduled' ? '📅 Modifica schedulazione' : '📅 Schedula pubblicazione' }}
+      </div>
+      <div class="schedule-panel__row">
+        <label>Data</label>
+        <input type="date" [(ngModel)]="scheduleDate" [min]="todayDate" />
+      </div>
+      <div class="schedule-panel__row">
+        <label>Ora</label>
+        <input type="time" [(ngModel)]="scheduleTime" />
+      </div>
+      <div class="schedule-panel__actions">
+        <button class="btn-schedule-confirm" (click)="confirmSchedule()" [disabled]="!scheduleDate">
+          ✓ Conferma
+        </button>
+        <button class="btn-cancel" (click)="scheduleExpanded = false">Annulla</button>
+      </div>
+    </div>
+  }
 
 </div>

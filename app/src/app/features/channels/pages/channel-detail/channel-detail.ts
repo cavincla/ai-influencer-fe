@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Channel } from '../../../../core/models/channel.model';
 import { GeneratedContent } from '../../../../core/models/content.model';
 import { ChannelService } from '../../../../core/services/channel.service';
+import { ContentService } from '../../../../core/services/content.service';
 import { ContentCardComponent } from '../../../dashboard/components/content-card/content-card';
 import { ToastService } from '../../../../core/services/toast.service';
 
@@ -18,6 +19,7 @@ import { ToastService } from '../../../../core/services/toast.service';
 export class ChannelDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
   private channelService = inject(ChannelService);
+  private contentService = inject(ContentService);
   private toast = inject(ToastService);
 
   channel: Channel | null = null;
@@ -25,6 +27,8 @@ export class ChannelDetailPage implements OnInit {
   total = 0;
   loading = false;
   generating = false;
+  overdueContents: GeneratedContent[] = [];
+  overdueAlertDismissed = false;
 
   newTopic = '';
   newContext = '';
@@ -47,6 +51,10 @@ export class ChannelDetailPage implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadChannel(id);
     this.loadContent(id);
+    this.contentService.getOverdue().subscribe({
+      next: (items) => (this.overdueContents = items),
+      error: () => {},
+    });
   }
 
   loadChannel(id: number): void {

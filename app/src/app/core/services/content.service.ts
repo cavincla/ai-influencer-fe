@@ -58,8 +58,13 @@ export class ContentService {
     return this.http.patch<GeneratedContent>(`${this.baseUrl}/${id}/script`, data);
   }
 
-  generateMedia(id: number, lang: string = 'it'): Observable<{ task_id: string; status: string; content_id: number }> {
-    const params = new HttpParams().set('lang', lang);
+  getOverdue(): Observable<GeneratedContent[]> {
+    return this.http.get<GeneratedContent[]>(`${this.baseUrl}/overdue`);
+  }
+
+  generateMedia(id: number, lang: string = 'it', bilingual: boolean = false): Observable<{ task_id: string; status: string; content_id: number }> {
+    let params = new HttpParams().set('lang', lang);
+    if (bilingual) params = params.set('bilingual', 'true');
     return this.http.post<{ task_id: string; status: string; content_id: number }>(
       `${this.baseUrl}/${id}/generate-media`,
       {},

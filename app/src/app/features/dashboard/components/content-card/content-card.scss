@@ -432,3 +432,175 @@
 @keyframes spin-inline {
   to { transform: rotate(360deg); }
 }
+
+// ── Status scheduled ──────────────────────────────────────────────
+.status-scheduled {
+  border-left: 3px solid #a78bfa;
+}
+
+.status-badge.status-scheduled {
+  background: rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
+}
+
+// ── Schedule panel ────────────────────────────────────────────────
+.schedule-panel {
+  margin: 0 16px 12px;
+  padding: 14px 16px;
+  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 10px;
+
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin-bottom: 10px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+
+    label {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary, #9ca3af);
+      width: 36px;
+      flex-shrink: 0;
+    }
+
+    input {
+      flex: 1;
+      background: var(--color-surface, #1e293b);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      border-radius: 6px;
+      color: var(--color-text, #f1f5f9);
+      padding: 5px 8px;
+      font-size: 0.85rem;
+
+      &:focus {
+        outline: none;
+        border-color: #a78bfa;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+}
+
+// ── Action buttons (scheduled) ────────────────────────────────────
+.btn-schedule {
+  background: rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(167, 139, 250, 0.25); }
+}
+
+.btn-schedule-info {
+  background: rgba(167, 139, 250, 0.12);
+  color: #a78bfa;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-cancel-schedule {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) { background: rgba(239, 68, 68, 0.22); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-schedule-confirm {
+  background: #a78bfa;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) { background: #8b5cf6; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #2a2a45;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover { color: #e0e0e0; }
+}
+
+// ── Bilingual hint ────────────────────────────────────────────────
+.bilingual-hint {
+  font-size: 11px;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  line-height: 1.4;
+
+  strong { font-weight: 700; }
+}
+
+// ── Toggle bilingue ───────────────────────────────────────────────
+.bilingual-toggle {
+  padding: 6px 16px 2px;
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: var(--color-text-secondary, #9ca3af);
+    user-select: none;
+
+    input[type="checkbox"] {
+      accent-color: #60a5fa;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+  }
+
+  &__text {
+    transition: color 0.2s;
+  }
+
+  &__label:has(input:checked) &__text {
+    color: #60a5fa;
+    font-weight: 500;
+  }
+}
